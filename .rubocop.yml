@@ -1,0 +1,26 @@
+AllCops:
+  Includes:
+    - '**/*.gemspec'
+    - '**/Rakefile'
+
+SignalException:
+  EnforcedStyle: only_raise
+
+SymbolArray:
+  Enabled: true
+
+Documentation:
+  Exclude:
+    - spec/**/*.rb
+
+LineLength:
+  Exclude:
+    - spec/**/*.rb
+
+CollectionMethods:
+  PreferredMethods:
+    collect:  'map'
+    collect!: 'map!'
+    detect:   'find'
+    find_all: 'select'
+    reduce:   'inject'

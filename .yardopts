@@ -1,0 +1,8 @@
+--no-private
+--title "Pulla"
+--readme README.md
+--markup markdown
+--markup-provider kramdown
+-
+HISTORY.md
+LICENSE
