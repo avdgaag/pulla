@@ -1,4 +1,10 @@
 module Pulla
+  # Provides the command-line interface of our application to the outside
+  # world. It defines a set of commands and their options that can be using by
+  # invoking the pulla executable and performs the required operations.
+  #
+  # This is the application's imperative shell as opposed to its functional
+  # core.
   class Cli
     extend Commandable
 
@@ -25,7 +31,17 @@ module Pulla
     end
 
     def github_repo
-      @github_repo ||= 'avdgaag/rpub'
+      @github_repo ||= find_repo
+    end
+
+    def find_repo
+      project_root = Pathname.pwd.to_enum(:ascend).find do |path|
+        path.join('.git').directory?
+      end
+      config = project_root.join('.git', 'config').read
+      repo = config[/^\s*url = git@github\.com:(\w+\/\w+)\.git\s*$/, 1]
+      raise 'Could not determine Github repository to use.' unless repo
+      repo
     end
 
     def github_id
@@ -82,6 +98,7 @@ module Pulla
 
     desc '-h', '--help', 'Show this help message'
     def help(enabled)
+      puts github_repo
       puts options
     end
 

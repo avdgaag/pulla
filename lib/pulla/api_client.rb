@@ -2,10 +2,18 @@ module Pulla
   class ApiClient
     attr_reader :base_uri, :authentication_query, :logger
 
+    DEFAULT_HTTP_OPTIONS = {
+      use_ssl: true,
+      verify_mode: OpenSSL::SSL::VERIFY_NONE
+    }.freeze
+
     def initialize(base_uri, id, token, logger)
       @base_uri = base_uri
       @logger = logger
-      @authentication_query = URI.encode_www_form(client_id: id, client_secret: token)
+      @authentication_query = URI.encode_www_form(
+        client_id: id,
+        client_secret: token
+      )
       extend JsonApi, ApiCaching
     end
 
@@ -24,7 +32,7 @@ module Pulla
       logger.info('ApiClient') { "#{req.class::METHOD} #{req.uri}" }
       logger.debug('ApiClient') { "Using headers: #{req.to_hash.inspect}" }
       req.uri.query = authentication_query
-      Net::HTTP.start(req.uri.host, req.uri.port, use_ssl: true) do |http|
+      Net::HTTP.start(req.uri.host, req.uri.port, DEFAULT_HTTP_OPTIONS) do |http|
         response = http.request(req)
         logger.info('ApiClient') { "#{response.code} #{response.message}" }
         case response
